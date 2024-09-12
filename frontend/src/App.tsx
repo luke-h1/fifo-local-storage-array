@@ -52,7 +52,9 @@ function App() {
           margin: "0 auto",
         }}
       >
-        <ul>
+        <ul
+          style={{ maxHeight: "500px", overflowY: "auto", marginTop: "2rem" }}
+        >
           {searchItems && searchItems.map((item) => <li>{item.title}</li>)}
         </ul>
       </div>
