@@ -4,13 +4,14 @@ import searchService, { SearchResponse } from "./services/searchService";
 import storageService from "./services/localStorageService";
 
 function App() {
-  const [count, setCount] = useState(0);
   const [text, setText] = useState("");
 
   const [searchItems, setSearchItems] = useState<SearchResponse[]>([]);
 
   const onSubmit = async () => {
-    const { paging, results } = await searchService.search(text);
+    const { data, paging, status } = await searchService.search(text);
+
+    setSearchItems(data.results);
 
     const history = storageService.getSync<string[]>("history") || [];
 
@@ -19,11 +20,7 @@ function App() {
       storageService.setSync("history", history);
     }
 
-    console.log("history", history);
-
     storageService.setSync("history", [...history, text]);
-
-    setSearchItems(results);
   };
 
   return (
@@ -45,6 +42,20 @@ function App() {
         value={text}
       />
       <button onClick={() => onSubmit()}>Submit</button>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "left",
+          width: "50%",
+          margin: "0 auto",
+        }}
+      >
+        <ul>
+          {searchItems && searchItems.map((item) => <li>{item.title}</li>)}
+        </ul>
+      </div>
 
       <br />
       <br />
