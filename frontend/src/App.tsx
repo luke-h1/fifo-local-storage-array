@@ -5,13 +5,23 @@ import storageService from "./services/localStorageService";
 
 function App() {
   const [text, setText] = useState("");
+  const [totalPages, setTotalPages] = useState<number[]>([]);
 
   const [searchItems, setSearchItems] = useState<SearchResponse[]>([]);
+  const [currPage, setCurrPage] = useState<number>(1);
 
-  const onSubmit = async () => {
-    const { data, paging, status } = await searchService.search(text);
+  const onSubmit = async (pageNum?: number) => {
+    const { data, paging } = await searchService.search(text, pageNum);
 
-    setSearchItems(data.results);
+    // setTotalPages([...totalPages]);
+
+    // paging.totalPages is a number of total pages
+    // turn it into an array of numbers
+    const tp = Array.from({ length: paging.totalPages }, (_, i) => i + 1);
+
+    setCurrPage(paging.page);
+    setTotalPages(tp);
+    setSearchItems(data);
 
     const history = storageService.getSync<string[]>("history") || [];
 
@@ -64,6 +74,20 @@ function App() {
       <br />
       <br />
       <br />
+
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        {totalPages.map((page) => (
+          <button
+            onClick={() => onSubmit(page)}
+            style={{
+              margin: "0.5rem",
+              color: page === currPage ? "red" : "black",
+            }}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
 
       {/* <div>
         <pre>{JSON.stringify(results.length, null, 2)}</pre>

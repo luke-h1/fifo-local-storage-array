@@ -15,11 +15,13 @@ export interface SearchResult {
 }
 
 const searchService = {
-  search: async (query: string) => {
-    const response = await fetch(`http://localhost:4000/search?query=${query}`);
+  search: async (query: string, pageNumber = 1) => {
+    const response = await fetch(
+      `http://localhost:4000/search?query=${query}&page=${pageNumber}`
+    );
     const data = await response.json();
     return data as {
-      data: SearchResult;
+      data: SearchResponse[];
       status: string;
       paging: SearchResult["paging"];
     };

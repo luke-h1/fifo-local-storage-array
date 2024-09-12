@@ -44,9 +44,16 @@ app.get("/search", async (req, res) => {
 
   console.log("got data", data.results.length);
 
+  const paginatedData = data.results.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+  console.info("page", page, "pageSize", pageSize);
+  console.info("paginatedData", paginatedData);
+
   return res.status(200).json({
     status: "OK",
-    data: data ?? [],
+    data: paginatedData ?? [],
     paging: {
       totalPages,
       page,
